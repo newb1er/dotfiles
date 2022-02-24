@@ -1,5 +1,11 @@
 #!/bin/bash
 
+if [[ $UID != 0 ]]; then
+	echo "Please run this script with sudo:"
+	echo "sudo $0 $*"
+	exit 1
+fi
+
 # install Fisher
 # NOTE: check whether fisher.fish completions existed.
 ## 		'fisher' command is not available in bash
@@ -18,9 +24,10 @@ fi
 
 # install neovim
 if [[ "$OSTYPE" == "linux-gnu" ]]; then
-	LINE=$(apt list tmux 2>/dev/null | wc -l)
+	LINE=$(apt list --installed tmux 2>/dev/null | grep tmux | wc -l)
 	if [ $LINE -le 1 ]; then
 		echo 'Installing neovim...'
+		apt install neovim
 	fi
 fi
 
