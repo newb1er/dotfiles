@@ -6,6 +6,33 @@ if [[ $UID != 0 ]]; then
 	exit 1
 fi
 
+apt_prog_installed() {
+	LINE=$(apt list --installed "$1" 2>/dev/null | grep "$1" | wc -l)
+	if [ $LINE -eq 0 ]; then
+		return 1
+	else
+		return 0
+	fi
+}
+
+# install fish
+if [[ "$OSTYPE" == "linux-gnu" ]]; then
+	INSTALLED=$(apt_prog_installed "fish")
+	if [ "$INSTALLED" = 0 ]; then
+		echo "Installing ${PROGRAM}..."
+		apt install ${PROGRAM} -y
+	fi
+fi
+
+# install tmux
+if [[ "$OSTYPE" == "linux-gnu" ]]; then
+	INSTALLED=$(apt_prog_installed "tmux")
+	if [ "$INSTALLED" = 0 ]; then
+		echo "Installing ${PROGRAM}..."
+		apt install ${PROGRAM} -y
+	fi
+fi
+
 # install Fisher
 # NOTE: check whether fisher.fish completions existed.
 ## 		'fisher' command is not available in bash
@@ -24,10 +51,10 @@ fi
 
 # install neovim
 if [[ "$OSTYPE" == "linux-gnu" ]]; then
-	LINE=$(apt list --installed tmux 2>/dev/null | grep tmux | wc -l)
-	if [ $LINE -le 1 ]; then
-		echo 'Installing neovim...'
-		apt install neovim
+	INSTALLED=$(apt_prog_installed "neovim")
+	if [ "$INSTALLED" = 0 ]; then
+		echo "Installing ${PROGRAM}..."
+		apt install ${PROGRAM}
 	fi
 fi
 
